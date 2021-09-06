@@ -53,6 +53,7 @@ static gboolean gstreamer_bus_call(GstBus *bus, GstMessage *msg, gpointer user_d
     }
     
     default:
+        goHandleBusMessage(msg,pipelineId);
         break;
     }
 
