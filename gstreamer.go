@@ -248,6 +248,7 @@ func goHandleSinkEOS(elementID C.int) {
 
 //export goHandleBusMessage
 func goHandleBusMessage(message *C.GstMessage, pipelineId C.int) {
+	fmt.Println("Message event fired!")
 	gstreamerLock.Lock()
 	defer gstreamerLock.Unlock()
 	msg := &Message{GstMessage: message}
