@@ -146,14 +146,14 @@ void gstreamer_set_caps(GstElement *element, char *capstr) {
 
 
 void gstreamer_element_push_buffer(GstElement *element, void *buffer,int len) {
-    gpointer p = g_memdup(buffer, len);
+    gpointer p = g_memdup2(buffer, len);
     GstBuffer *data = gst_buffer_new_wrapped(p, len);
     gst_app_src_push_buffer(GST_APP_SRC(element), data);
 }
 
 
 void gstreamer_element_push_buffer_timestamp(GstElement *element, void *buffer,int len, guint64 pts) {
-    gpointer p = g_memdup(buffer, len);
+    gpointer p = g_memdup2(buffer, len);
     GstBuffer *data = gst_buffer_new_wrapped(p, len);
     GST_BUFFER_PTS(data) = pts;
     GST_BUFFER_DTS(data) = pts;
