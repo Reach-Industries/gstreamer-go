@@ -16,69 +16,6 @@ func init() {
 	C.gstreamer_init()
 }
 
-type MessageType int
-
-const (
-	MESSAGE_UNKNOWN       MessageType = C.GST_MESSAGE_UNKNOWN
-	MESSAGE_EOS           MessageType = C.GST_MESSAGE_EOS
-	MESSAGE_ERROR         MessageType = C.GST_MESSAGE_ERROR
-	MESSAGE_WARNING       MessageType = C.GST_MESSAGE_WARNING
-	MESSAGE_INFO          MessageType = C.GST_MESSAGE_INFO
-	MESSAGE_TAG           MessageType = C.GST_MESSAGE_TAG
-	MESSAGE_BUFFERING     MessageType = C.GST_MESSAGE_BUFFERING
-	MESSAGE_STATE_CHANGED MessageType = C.GST_MESSAGE_STATE_CHANGED
-	MESSAGE_ANY           MessageType = C.GST_MESSAGE_ANY
-)
-
-type Message struct {
-	GstMessage *C.GstMessage
-}
-
-func (v *Message) GetType() MessageType {
-	c := C.toGstMessageType(unsafe.Pointer(v.native()))
-	return MessageType(c)
-}
-
-func (v *Message) native() *C.GstMessage {
-	if v == nil {
-		return nil
-	}
-	return v.GstMessage
-}
-
-func (v *Message) GetTimestamp() uint64 {
-	c := C.messageTimestamp(unsafe.Pointer(v.native()))
-	return uint64(c)
-}
-
-func (v *Message) GetTypeName() string {
-	c := C.messageTypeName(unsafe.Pointer(v.native()))
-	return C.GoString(c)
-}
-
-func gbool(b bool) C.gboolean {
-	if b {
-		return C.gboolean(1)
-	}
-	return C.gboolean(0)
-}
-func gobool(b C.gboolean) bool {
-	return b != 0
-}
-
-type Element struct {
-	element *C.GstElement
-	out     chan []byte
-	stop    bool
-	id      int
-}
-
-type Pipeline struct {
-	pipeline *C.GstPipeline
-	messages chan *Message
-	id       int
-}
-
 // StartGlibMainThreadLoop starts GLib's main loop
 // It needs to be called from the process' main thread
 // Because many gstreamer plugins require access to the main thread
@@ -253,7 +190,6 @@ func goHandleSinkEOS(elementID C.int) {
 
 //export goHandleBusMessage
 func goHandleBusMessage(message *C.GstMessage, pipelineId C.int) {
-	fmt.Println("Message event fired!")
 	gstreamerLock.Lock()
 	defer gstreamerLock.Unlock()
 	msg := &Message{GstMessage: message}
@@ -262,7 +198,7 @@ func goHandleBusMessage(message *C.GstMessage, pipelineId C.int) {
 			pipeline.messages <- msg
 		}
 	} else {
-		fmt.Printf("discarding message, no pipelie with id %d", int(pipelineId))
+		fmt.Printf("discarding message, no pipeline with id %d", int(pipelineId))
 	}
 
 }
@@ -274,11 +210,8 @@ func ScanPathForPlugins(directory string) {
 }
 
 func CheckPlugins(plugins []string) error {
-
 	var plugin *C.GstPlugin
-	var registry *C.GstRegistry
-
-	registry = C.gst_registry_get()
+	registry := C.gst_registry_get()
 
 	for _, pluginstr := range plugins {
 		plugincstr := C.CString(pluginstr)

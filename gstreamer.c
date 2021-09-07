@@ -16,14 +16,6 @@ void gstreamer_receive_start_mainloop(void)
     g_main_loop_run(gstreamer_receive_main_loop);
 }
 
-// MESSAGE_UNKNOWN       MessageType = C.GST_MESSAGE_UNKNOWN
-// MESSAGE_EOS           MessageType = C.GST_MESSAGE_EOS
-// MESSAGE_ERROR         MessageType = C.GST_MESSAGE_ERROR
-// MESSAGE_TAG           MessageType = C.GST_MESSAGE_TAG
-// MESSAGE_BUFFERING     MessageType = C.GST_MESSAGE_BUFFERING
-// MESSAGE_STATE_CHANGED MessageType = C.GST_MESSAGE_STATE_CHANGED
-// MESSAGE_ANY           MessageType = C.GST_MESSAGE_ANY
-
 typedef struct BusMessageUserData
 {
     int pipelineId;
