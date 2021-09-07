@@ -63,10 +63,7 @@ func gbool(b bool) C.gboolean {
 	return C.gboolean(0)
 }
 func gobool(b C.gboolean) bool {
-	if b != 0 {
-		return true
-	}
-	return false
+	return b != 0
 }
 
 type Element struct {
@@ -80,6 +77,14 @@ type Pipeline struct {
 	pipeline *C.GstPipeline
 	messages chan *Message
 	id       int
+}
+
+// StartGlibMainThreadLoop starts GLib's main loop
+// It needs to be called from the process' main thread
+// Because many gstreamer plugins require access to the main thread
+// See: https://golang.org/pkg/runtime/#LockOSThread
+func StartGlibMainThreadLoop() {
+	C.gstreamer_receive_start_mainloop()
 }
 
 var pipelines = make(map[int]*Pipeline)

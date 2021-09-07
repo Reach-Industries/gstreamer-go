@@ -1,11 +1,10 @@
 # gstreamer-go
-gstreamer simple wrap for golang
 
+gstreamer simple wrap for golang
 
 ## You can also try https://github.com/notedit/gst
 
-## Install 
-
+## Install
 
 Ubuntu or Dedian
 
@@ -30,7 +29,6 @@ Then
 go get github.com/notedit/gstreamer-go
 ```
 
-
 ## How to use
 
 ```go
@@ -51,7 +49,6 @@ filter.SetCap("video/x-raw,width=1280,height=720")
 pipeline.Start()
 
 ```
-
 
 ## Send Media data to pipeline
 
@@ -78,8 +75,7 @@ for {
 
 push raw rgb data to the pipeline
 
-
-## Poll Media data from pipeline 
+## Poll Media data from pipeline
 
 ```go
 pipeline, err := New("videotestsrc ! video/x-raw,format=I420,framerate=15/1 ! x264enc bframes=0 speed-preset=veryfast key-int-max=60 ! video/x-h264,stream-format=byte-stream ! appsink name=sink")
@@ -101,13 +97,12 @@ for {
 }
 ```
 
-now we can get the h264 raw data from the pipeline 
-
+now we can get the h264 raw data from the pipeline
 
 ## Check Plugins does exist
 
 ```go
-	
+
 plugins := []string{"videotestsrc", "audiotestsrc", "rtp", "curl","x264", "rtmp"}
 
 err := CheckPlugins(plugins)
@@ -118,4 +113,8 @@ if err != nil {
 
 ```
 
+## Troubleshooting
 
+If the channel returned from `pipeline.PullMessage()` is not firing any message bus events, then it is likely that the Glib main loop is not running in the main thread of the application.
+
+Ensure that you call `StartGlibMainThreadLoop()` as the last function call in your `func main() {...}` function.
