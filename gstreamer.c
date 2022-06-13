@@ -98,6 +98,11 @@ void gstreamer_pipeline_stop(GstPipeline *pipeline)
     gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_NULL);
 }
 
+void gstreamer_pipeline_unref(GstPipeline *pipeline)
+{
+    gst_object_unref(GST_ELEMENT(pipeline));
+}
+
 void gstreamer_pipeline_sendeos(GstPipeline *pipeline)
 {
     gst_element_send_event(GST_ELEMENT(pipeline), gst_event_new_eos());

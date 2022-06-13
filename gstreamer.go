@@ -63,6 +63,7 @@ func (p *Pipeline) Pause() {
 	C.gstreamer_pipeline_pause(p.pipeline)
 }
 
+// Stops and disposes of the pipeline
 func (p *Pipeline) Stop() {
 	gstreamerLock.Lock()
 	delete(pipelines, p.id)
@@ -71,6 +72,7 @@ func (p *Pipeline) Stop() {
 		close(p.messages)
 	}
 	C.gstreamer_pipeline_stop(p.pipeline)
+	C.gstreamer_pipeline_unref(p.pipeline)
 }
 
 func (p *Pipeline) SendEOS() {

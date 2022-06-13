@@ -44,6 +44,9 @@ void gstreamer_pipeline_pause(GstPipeline *pipeline);
 
 void gstreamer_pipeline_stop(GstPipeline *pipeline);
 
+// Call when you've finished with a pipeline
+void gstreamer_pipeline_unref(GstPipeline *pipeline);
+
 void gstreamer_pipeline_sendeos(GstPipeline *pipeline);
 
 void gstreamer_pipeline_set_auto_flush_bus(GstPipeline *pipeline, gboolean auto_flush);
